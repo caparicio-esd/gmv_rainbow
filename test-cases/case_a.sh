@@ -1,6 +1,8 @@
 #!/bin/bash
 
 #### Test Name: TransferRequest
+#### Test Goal: Test TransferRequest endpoint and message structure. Assert initiation of transfer process
+
 #### BEGIN PREAMBLE
 # Run dbs
 docker compose -f ./ds-deployment/docker-compose.yaml up -d db-provider db-consumer
