@@ -16,7 +16,7 @@ sleep 1
 #### END PREAMBLE
 
 #### BEGIN TEST
-# We create a TransferRequestMessage
+# We create a TransferRequestMessage with HTTP REST API
 providerPid=$(
     curl --location 'http://127.0.0.1:1234/transfers/request' \
         --header 'Content-Type: application/json' \
@@ -32,13 +32,13 @@ providerPid=$(
         }' | jq -r '.providerPid'
 )
 
-# We test the state of the Transfer
+# We test the state field of the Transfer
 expected_state="REQUESTED"
 state=$(
     curl --location "http://127.0.0.1:1234/transfers/$providerPid" | jq -r '.state'
 )
 
-# Assertions
+# We assert state==REQUESTED
 if [ "$state" != "$expected_state" ]; then
     echo "Assertion failed: expected state '$expected_state' but got '$state'"
     exit 1
