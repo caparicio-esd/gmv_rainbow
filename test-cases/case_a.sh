@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #### Test Name: TransferRequest
-#### Test Goal: Test TransferRequest endpoint and message structure. Assert initiation of transfer process
+#### Test Goal: Test TransferRequest endpoint and inits a Transfer Process. Assert initiation of transfer process
 
 #### BEGIN PREAMBLE
 # Run dbs
