@@ -43,7 +43,7 @@ if [ "$state" != "$expected_state" ]; then
     echo "Assertion failed: expected state '$expected_state' but got '$state'"
     exit 1
 fi
-echo "Assertion passed: state is '$state'"
+echo "✅ Assertion passed: state is '$state'"
 #### END TEST
 
 #### BEGIN POSTAMBLE
