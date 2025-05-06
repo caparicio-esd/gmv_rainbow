@@ -25,9 +25,11 @@ response=$(curl --silent --write-out "HTTPSTATUS:%{http_code}" \
     "dct:title": "catalog title"
   }')
 
+echo $response
+
 # We extract body and http code
-body=$(echo "$response" | sed -e 's/HTTPSTATUS\:.*//g')
-http_code=$(echo "$response" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+body=$(echo "$response" | sed -e 's/HTTPSTATUS\:.*//g') # Get response but HTTPSTATUS onwards
+http_code=$(echo "$response" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://') # Get response HTTPSTATUS onwards
 
 # Assert http code is a number
 if ! [[ "$http_code" =~ ^[0-9]+$ ]]; then
