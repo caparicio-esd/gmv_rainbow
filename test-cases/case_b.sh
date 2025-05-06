@@ -51,4 +51,4 @@ echo "$body" | jq
 
 #### BEGIN POSTAMBLE
 docker compose -f ./ds-deployment/docker-compose.yaml down
-#### END PREAMBLE
+#### END POSTAMBLE

@@ -48,4 +48,4 @@ echo "✅ Assertion passed: state is '$state'"
 
 #### BEGIN POSTAMBLE
 docker compose -f ./ds-deployment/docker-compose.yaml down
-#### END PREAMBLE
+#### END POSTAMBLE
