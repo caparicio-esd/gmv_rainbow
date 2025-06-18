@@ -3,8 +3,7 @@ services:
 
   ds-provider:
     container_name: ds-provider
-    image: caparicioesd/rainbow:latest
-    platform: linux/arm64/v8
+    image: caparicioesd/rainbow:0.1
     restart: on-failure
     env_file:
       - ./../.env.core.provider
@@ -17,8 +16,7 @@ services:
 
   ds-provider-setup:
     container_name: ds-provider-setup
-    image: caparicioesd/rainbow:latest
-    platform:  linux/arm64/v8
+    image: caparicioesd/rainbow:0.1
     restart: on-failure
     env_file:
       - ./../.env.core.provider
@@ -39,8 +37,7 @@ services:
 
   ds-consumer:
     container_name: ds-consumer
-    image: caparicioesd/rainbow:latest
-    platform:  linux/arm64/v8
+    image: caparicioesd/rainbow:0.1
     restart: on-failure
     depends_on:
       - db-consumer
@@ -52,8 +49,7 @@ services:
 
   ds-consumer-setup:
     container_name: ds-consumer-setup
-    image: caparicioesd/rainbow:latest
-    platform:  linux/arm64/v8
+    image: caparicioesd/rainbow:0.1
     restart: on-failure
     depends_on:
       - db-consumer
