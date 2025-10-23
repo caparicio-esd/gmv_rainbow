@@ -68,7 +68,19 @@ Run the automatic onboarding to have the actors authenticated and ready:
 ./scripts/bash/auto-onboarding.sh
 ```
 
-### Development and Contribution
+## Testing flow with notebook
+
+For testing purposes, there is a notebook available with the whole flow defined. For using it:
+
+```bash
+python -m venv .venv
+source ./.venv/bin/activate
+pip install -r requirements.txt
+```
+
+Once that is done, the jupyter notebook is ready. If you are working in a IDE such as VSCode or IntelliJ, please select the python kernel in the root.
+
+## Development and Contribution
 
 Create a branch for your change:
 
