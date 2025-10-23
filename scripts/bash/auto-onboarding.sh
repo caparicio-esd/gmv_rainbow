@@ -13,6 +13,11 @@ AuthorityUrl="http://127.0.0.1:1500"
 ConsumerUrl="http://127.0.0.1:1100"
 ProviderUrl="http://127.0.0.1:1200"
 
+# --- 1. Define URLs ---
+AuthorityUrlFromDocker="http://host.docker.internal:1500"
+ConsumerUrlFromDocker="http://host.docker.internal:1100"
+ProviderUrlFromDocker="http://host.docker.internal:1200"
+
 # Stop script execution on error (fail-fast)
 set -e
 
@@ -93,7 +98,7 @@ echo "-----------------------------------------------" >&2
 
 
 # 2.5 C Beg 4 Credential (Consumer Requests Credential from Authority)
-C_BEG_BODY=$(jq -n --arg url "$AuthorityUrl/api/v1/request/credential" \
+C_BEG_BODY=$(jq -n --arg url "$AuthorityUrlFromDocker/api/v1/request/credential" \
     --arg id "$AuthorityDid" \
     '{"url": $url, "id": $id, "slug": "authority", "vc_type": "DataspaceParticipantCredential"}')
 
@@ -133,7 +138,7 @@ invoke_curl_robust "POST" "$ConsumerUrl/api/v1/process/oidc4vci" "$OIDC4VCI_PROC
 
 
 # 2.10 C Grant Request & Get OIDC4VP_URI
-OIDC4VP_BODY=$(jq -n --arg url "$ProviderUrl/api/v1/access" \
+OIDC4VP_BODY=$(jq -n --arg url "$ProviderUrlFromDocker/api/v1/access" \
     --arg id "$ProviderDid" \
     '{"url": $url, "id": $id, "slug": "provider", "actions": "talk"}')
 
