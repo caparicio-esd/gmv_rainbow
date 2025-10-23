@@ -1,4 +1,4 @@
-# GMV Rainbow
+# Rainbow Deployment
 
 This repository contains artifacts and scripts to deploy and test the Rainbow framework. It includes example certificates for authority, provider, and consumer, a central docker-compose file, and automation scripts in Bash.
 
