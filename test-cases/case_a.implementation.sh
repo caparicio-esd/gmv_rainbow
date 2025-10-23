@@ -4,21 +4,13 @@
 #### Test Goal: Test TransferRequest endpoint and inits a Transfer Process. Assert initiation of transfer process
 
 #### BEGIN PREAMBLE
-# Run dbs
-docker compose -f ./ds-deployment/docker-compose.yaml up -d db-provider db-consumer
-sleep 3
-# Setup provider and consumer dbs
-docker compose -f ./ds-deployment/docker-compose.yaml up ds-provider-setup ds-consumer-setup
-sleep 2
-# Setup servers consumer and provider
-docker compose -f ./ds-deployment/docker-compose.yaml up -d ds-provider ds-consumer
-sleep 1
+# Run dbs and services in scripts/bash/auto-*.sh
 #### END PREAMBLE
 
 #### BEGIN TEST
 # We create a TransferRequestMessage with HTTP REST API
 providerPid=$(
-    curl --location 'http://127.0.0.1:1234/transfers/request' \
+    curl --location 'http://127.0.0.1:1200/transfers/setup-start' \
         --header 'Content-Type: application/json' \
         --data-raw '{
             "@context": [
@@ -35,7 +27,7 @@ providerPid=$(
 # We test the state field of the Transfer
 expected_state="REQUESTED"
 state=$(
-    curl --location "http://127.0.0.1:1234/transfers/$providerPid" | jq -r '.state'
+    curl --location "http://127.0.0.1:1200/transfers/$providerPid" | jq -r '.state'
 )
 
 # We assert state==REQUESTED

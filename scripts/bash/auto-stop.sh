@@ -16,13 +16,13 @@ BASE_DIR="$(cd "$(dirname "$0")" && pwd)/../.."
 
 
 # ----------------------------
-# 2. Start Applications
+# 2. Stop Applications
 # ----------------------------
 echo "Starting databases with Docker Compose..."
-# Starts the containers and runs them in detached (background) mode.
+# Stop the containers.
 DOCKER_COMPOSE_PATH="$BASE_DIR/deployment/docker-compose.core.yaml"
-docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider ds_core_consumer ds_authority
-echo "Waiting 3 seconds for applications to be ready..."
+docker-compose -f "$DOCKER_COMPOSE_PATH" down  ds_core_provider ds_core_consumer ds_authority
+echo "Waiting 3 seconds for applications to be killed..."
 sleep 3
 
-echo "Rainbow services started. Check the processes for live logs"
+echo "Rainbow services stopped"

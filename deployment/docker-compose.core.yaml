@@ -13,8 +13,11 @@ services:
       - "1200:1200"
     volumes:
       - ./../.env.provider.core:/app/.env.provider.core
+      - ./../certificates:/app/certificates
     entrypoint: ["/usr/local/bin/rainbow_core"]
     command: ["provider", "start", "--env-file", "/app/.env.provider.core"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   ds_core_provider_setup:
     container_name: ds_core_provider_setup
@@ -50,8 +53,11 @@ services:
       - "1100:1100"
     volumes:
       - ./../.env.consumer.core:/app/.env.consumer.core
+      - ./../certificates:/app/certificates
     entrypoint: ["/usr/local/bin/rainbow_core"]
     command: ["consumer", "start", "--env-file", "/app/.env.consumer.core"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   ds_core_consumer_setup:
     container_name: ds_core_consumer_setup
@@ -87,8 +93,11 @@ services:
       - "1500:1500"
     volumes:
       - ./../.env.authority:/app/.env.authority
+      - ./../certificates:/app/certificates
     entrypoint: ["/usr/local/bin/rainbow_authority"]
     command: ["start", "--env-file", "/app/.env.authority"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   ds_authority_setup:
     container_name: ds_authority_setup
