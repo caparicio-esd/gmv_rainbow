@@ -5,7 +5,7 @@ services:
   # Core provider with start and setup services, along with its database
   ds_core_provider:
     container_name: ds_core_provider
-    image: caparicioesd/rainbow:0.3.3
+    image: quay.io/eunomia_upm/rainbow:0.3.4
     restart: on-failure
     depends_on:
       - ds_core_provider_db
@@ -21,7 +21,7 @@ services:
 
   ds_core_provider_setup:
     container_name: ds_core_provider_setup
-    image: caparicioesd/rainbow:0.3.3
+    image: quay.io/eunomia_upm/rainbow:0.3.4
     depends_on:
       - ds_core_provider_db
     volumes:
@@ -45,7 +45,7 @@ services:
   # Core consumer with start and setup services, along with its database
   ds_core_consumer:
     container_name: ds_core_consumer
-    image: caparicioesd/rainbow:0.3.3
+    image: quay.io/eunomia_upm/rainbow:0.3.4
     restart: on-failure
     depends_on:
       - ds_core_consumer_db
@@ -61,7 +61,7 @@ services:
 
   ds_core_consumer_setup:
     container_name: ds_core_consumer_setup
-    image: caparicioesd/rainbow:0.3.3
+    image: quay.io/eunomia_upm/rainbow:0.3.4
     depends_on:
       - ds_core_provider_db
     volumes:
@@ -85,7 +85,7 @@ services:
   # Authority with start and setup services, along with its database
   ds_authority:
     container_name: ds_authority
-    image: caparicioesd/rainbow_authority:0.3.3
+    image: quay.io/eunomia_upm/rainbow_authority:0.3.4
     restart: on-failure
     depends_on:
       - ds_authority_db
@@ -101,7 +101,7 @@ services:
 
   ds_authority_setup:
     container_name: ds_authority_setup
-    image: caparicioesd/rainbow_authority:0.3.3
+    image: quay.io/eunomia_upm/rainbow_authority:0.3.4
     depends_on:
       - ds_authority_db
     ports:
