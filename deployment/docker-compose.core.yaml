@@ -5,7 +5,7 @@ services:
   # Core provider with start and setup services, along with its database
   ds_core_provider:
     container_name: ds_core_provider
-    image: quay.io/eunomia_upm/rainbow:0.3.7
+    image: quay.io/eunomia_upm/rainbow:0.3.8
     #platform: linux/amd64
     restart: on-failure
     depends_on:
@@ -23,7 +23,7 @@ services:
 
   ds_core_provider_setup:
     container_name: ds_core_provider_setup
-    image: quay.io/eunomia_upm/rainbow:0.3.7
+    image: quay.io/eunomia_upm/rainbow:0.3.8
     #platform: linux/amd64
     depends_on:
       - ds_core_provider_db
@@ -48,7 +48,7 @@ services:
   # Core consumer with start and setup services, along with its database
   ds_core_consumer:
     container_name: ds_core_consumer
-    image: quay.io/eunomia_upm/rainbow:0.3.7
+    image: quay.io/eunomia_upm/rainbow:0.3.8
     #platform: linux/amd64
     restart: on-failure
     depends_on:
@@ -66,7 +66,7 @@ services:
 
   ds_core_consumer_setup:
     container_name: ds_core_consumer_setup
-    image: quay.io/eunomia_upm/rainbow:0.3.7
+    image: quay.io/eunomia_upm/rainbow:0.3.8
     #platform: linux/amd64
     depends_on:
       - ds_core_provider_db
@@ -91,7 +91,7 @@ services:
   # Authority with start and setup services, along with its database
   ds_authority:
     container_name: ds_authority
-    image: quay.io/eunomia_upm/rainbow_authority:0.3.7
+    image: quay.io/eunomia_upm/rainbow_authority:0.3.8
     #platform: linux/amd64
     restart: on-failure
     depends_on:
@@ -109,7 +109,7 @@ services:
 
   ds_authority_setup:
     container_name: ds_authority_setup
-    image: quay.io/eunomia_upm/rainbow_authority:0.3.7
+    image: quay.io/eunomia_upm/rainbow_authority:0.3.8
     #platform: linux/amd64
     depends_on:
       - ds_authority_db
