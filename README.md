@@ -125,7 +125,7 @@ For Windows users:
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate.bat
+.venv\Scripts\activate.ps1
 pip install -r requirements.txt
 ```
 
