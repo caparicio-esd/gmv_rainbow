@@ -112,13 +112,21 @@ If you are a Linux user install also python3-venv
 sudo apt install python3-venv -y
 ```
 
-After, you can create a virtual environment and install dependencies.
+After, you can create a virtual environment and install dependencies. For Linux or MacOS users:
 
 ```bash
 python3 -m venv .venv
 source ./.venv/bin/activate
 pip install -r requirements.txt
 
+```
+
+For Windows users:
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -r requirements.txt
 ```
 
 Once that is done, the jupyter notebook is ready. If you are working in a IDE such as VSCode or IntelliJ, please select the python kernel in the root and play with the notebook.
