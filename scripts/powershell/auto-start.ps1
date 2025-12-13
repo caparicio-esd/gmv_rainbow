@@ -21,7 +21,7 @@ Write-Host "Starting databases with Docker Compose..." -ForegroundColor Yellow
 
 # Starts the containers and runs them in detached (background) mode.
 $DOCKER_COMPOSE_PATH = "$BASE_DIR\deployment\docker-compose.core.yaml"
-docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider ds_core_consumer ds_authority
+docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider1 ds_core_provider2 ds_core_consumer ds_authority
 
 Write-Host "Waiting 10 seconds for applications to be ready..." -ForegroundColor Yellow
 Start-Sleep -Seconds 10

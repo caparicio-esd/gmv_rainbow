@@ -17,7 +17,7 @@ services:
       - ./../certificates:/app/certificates
       - ./../specs:/app/specs
     entrypoint: ["/usr/local/bin/rainbow_core"]
-    command: ["provider1", "start", "--env-file", "/app/.env.provider1.core"]
+    command: ["provider", "start", "--env-file", "/app/.env.provider1.core"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -30,7 +30,7 @@ services:
     volumes:
       - ./../.env.provider1.core:/app/.env.provider1.core
     entrypoint: ["/usr/local/bin/rainbow_core"]
-    command: ["provider1", "setup", "--env-file", "/app/.env.provider1.core"]
+    command: ["provider", "setup", "--env-file", "/app/.env.provider1.core"]
 
   ds_core_provider1_db:
     container_name: "ds_core_provider1_db"
@@ -61,7 +61,7 @@ services:
       - ./../certificates:/app/certificates
       - ./../specs:/app/specs
     entrypoint: ["/usr/local/bin/rainbow_core"]
-    command: ["provider2", "start", "--env-file", "/app/.env.provider2.core"]
+    command: ["provider", "start", "--env-file", "/app/.env.provider2.core"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -74,7 +74,7 @@ services:
     volumes:
       - ./../.env.provider2.core:/app/.env.provider2.core
     entrypoint: ["/usr/local/bin/rainbow_core"]
-    command: ["provider2", "setup", "--env-file", "/app/.env.provider2.core"]
+    command: ["provider", "setup", "--env-file", "/app/.env.provider2.core"]
   ds_core_provider2_db:
     container_name: "ds_core_provider2_db"
     image: "postgres"
@@ -84,7 +84,7 @@ services:
       POSTGRES_USER: ds_provider2
       POSTGRES_DB: ds_provider2
     ports:
-      - "1800:5432"
+      - "2000:5432"
 
 
 
@@ -115,7 +115,8 @@ services:
     image: quay.io/eunomia_upm/rainbow:0.3.8
     #platform: linux/amd64
     depends_on:
-      - ds_core_provider_db
+      - ds_core_provider1_db
+      - ds_core_provider2_db
     volumes:
       - ./../.env.consumer.core:/app/.env.consumer.core
     entrypoint: ["/usr/local/bin/rainbow_core"]

@@ -2,10 +2,12 @@
 param(
     [string]$AuthorityUrl = "http://127.0.0.1:1500",
     [string]$ConsumerUrl  = "http://127.0.0.1:1100",
-    [string]$ProviderUrl  = "http://127.0.0.1:1200",
+    [string]$Provider1Url  = "http://127.0.0.1:1200",
+    [string]$Provider2Url  = "http://127.0.0.1:1800",
     [string]$AuthorityUrlFromDocker = "http://host.docker.internal:1500",
     [string]$ConsumerUrlFromDocker  = "http://host.docker.internal:1100",
-    [string]$ProviderUrlFromDocker  = "http://host.docker.internal:1200"
+    [string]$Provider1UrlFromDocker  = "http://host.docker.internal:1200",
+    [string]$Provider2UrlFromDocker  = "http://host.docker.internal:1800"
 )
 
 function Invoke-CurlJson {
@@ -53,11 +55,12 @@ function Invoke-CurlJson {
 Write-Host "Starting auto-onboarding script..."
 
 # ----------------------------
-# Onboarding Authority / Consumer / Provider (no se parsea JSON)
+# Onboarding Authority / Consumer / Provider1 (no se parsea JSON) / Provider2
 # ----------------------------
 Invoke-CurlJson -Method "POST" -Url "$AuthorityUrl/api/v1/wallet/onboard" -ParseJson:$false
 Invoke-CurlJson -Method "POST" -Url "$ConsumerUrl/api/v1/wallet/onboard" -ParseJson:$false
-Invoke-CurlJson -Method "POST" -Url "$ProviderUrl/api/v1/wallet/onboard" -ParseJson:$false
+Invoke-CurlJson -Method "POST" -Url "$Provider1Url/api/v1/wallet/onboard" -ParseJson:$false
+Invoke-CurlJson -Method "POST" -Url "$Provider2Url/api/v1/wallet/onboard" -ParseJson:$false
 
 # ----------------------------
 # Getting DIDs
@@ -66,8 +69,11 @@ $AUTH_DID     = (Invoke-CurlJson -Url "$AuthorityUrl/api/v1/wallet/did.json").id
 Write-Host "Authority DID: $AUTH_DID"
 $CONSUMER_DID = (Invoke-CurlJson -Url "$ConsumerUrl/api/v1/wallet/did.json").id
 Write-Host "Consumer DID: $CONSUMER_DID"
-$PROVIDER_DID = (Invoke-CurlJson -Url "$ProviderUrl/api/v1/wallet/did.json").id
-Write-Host "Provider DID: $PROVIDER_DID"
+$PROVIDER1_DID = (Invoke-CurlJson -Url "$Provider1Url/api/v1/wallet/did.json").id
+Write-Host "Provider1 DID: $PROVIDER1_DID"
+$PROVIDER2_DID = (Invoke-CurlJson -Url "$Provider2Url/api/v1/wallet/did.json").id
+Write-Host "Provider2 DID: $PROVIDER2_DID"
+
 
 # ----------------------------
 # Consumer begins request for credential
@@ -109,23 +115,43 @@ Invoke-CurlJson -Method "POST" -Url "$ConsumerUrl/api/v1/wallet/oidc4vci" -Body 
 Write-Host "OIDC4VCI processed."
 
 # ----------------------------
-# Consumer requests grant from Provider
+# AUTENTICACIÓN CON PROVIDER 1
 # ----------------------------
-$OIDC4VP_BODY = @{
-    url = "$ProviderUrlFromDocker/api/v1/gate/access"
-    id  = $PROVIDER_DID
+Write-Host ""
+Write-Host "=== AUTHENTICATING WITH PROVIDER1 ===" -ForegroundColor Cyan
+
+$OIDC4VP_BODY_P1 = @{
+    url = "$Provider1UrlFromDocker/api/v1/gate/access"
+    id  = $PROVIDER1_DID
     slug = "rainbow_provider"
     actions = "talk"
 }
-$OIDC4VP_URI = Invoke-CurlJson -Method "POST" -Url "$ConsumerUrl/api/v1/onboard/provider" -Body $OIDC4VP_BODY -ParseJson:$false
-Write-Host "OIDC4VP_URI: $OIDC4VP_URI"
+$OIDC4VP_URI_P1 = Invoke-CurlJson -Method "POST" -Url "$ConsumerUrl/api/v1/onboard/provider" -Body $OIDC4VP_BODY_P1 -ParseJson:$false
+Write-Host "OIDC4VP_URI Provider1: $OIDC4VP_URI_P1"
+
+Write-Host "Consumer processes OIDC4VP for Provider1..."
+Invoke-CurlJson -Method "POST" -Url "$ConsumerUrl/api/v1/wallet/oidc4vp" -Body @{ uri = $OIDC4VP_URI_P1 } -ParseJson:$false
+Write-Host "OIDC4VP for Provider1 processed." -ForegroundColor Green
 
 # ----------------------------
-# Consumer processes OIDC4VP
+# AUTENTICACIÓN CON PROVIDER 2
 # ----------------------------
-Write-Host "Consumer processes OIDC4VP..."
-Invoke-CurlJson -Method "POST" -Url "$ConsumerUrl/api/v1/wallet/oidc4vp" -Body @{ uri = $OIDC4VP_URI } -ReturnJson:$false
-Write-Host "OIDC4VP processed." -ForegroundColor Green
+Write-Host ""
+Write-Host "=== AUTHENTICATING WITH PROVIDER2 ===" -ForegroundColor Cyan
 
+$OIDC4VP_BODY_P2 = @{
+    url = "$Provider2UrlFromDocker/api/v1/gate/access"
+    id  = $PROVIDER2_DID
+    slug = "rainbow_provider"
+    actions = "talk"
+}
+$OIDC4VP_URI_P2 = Invoke-CurlJson -Method "POST" -Url "$ConsumerUrl/api/v1/onboard/provider" -Body $OIDC4VP_BODY_P2 -ParseJson:$false
+Write-Host "OIDC4VP_URI Provider2: $OIDC4VP_URI_P2"
+
+Write-Host "Consumer processes OIDC4VP for Provider2..."
+Invoke-CurlJson -Method "POST" -Url "$ConsumerUrl/api/v1/wallet/oidc4vp" -Body @{ uri = $OIDC4VP_URI_P2 } -ParseJson:$false
+Write-Host "OIDC4VP for Provider2 processed." -ForegroundColor Green
+
+Write-Host ""
 Write-Host "Onboarding script finished successfully!" -ForegroundColor Green
 Write-Host ""
