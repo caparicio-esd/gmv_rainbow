@@ -33,7 +33,7 @@ echo "--- Restarting databases with Docker Compose ---"
 # 'down -v' stops and removes containers, and removes associated volumes
 docker-compose -f "$DOCKER_COMPOSE_PATH" down -v
 # 'up -d' recreates and starts services in detached mode
-docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider_db ds_core_consumer_db ds_authority_db
+docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider1_db ds_core_provider2_db ds_core_consumer_db ds_authority_db
 echo "Waiting 5 seconds for databases to stabilize..."
 sleep 5
 
@@ -43,7 +43,7 @@ sleep 5
 # ----------------------------
 echo ""
 echo "--- Setup databases ---"
-docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider_setup ds_core_consumer_setup ds_authority_setup
+docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider1_setup ds_core_provider2_setup ds_core_consumer_setup ds_authority_setup
 
 
 # ----------------------------

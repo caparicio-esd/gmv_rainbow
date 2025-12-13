@@ -37,7 +37,7 @@ docker-compose -f "$DOCKER_COMPOSE_PATH" down -v
 
 # 'up -d' recreates and starts services in detached mode
 Write-Host "Starting database services..."
-docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider_db ds_core_consumer_db ds_authority_db
+docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider1_db ds_core_provider2_db ds_core_consumer_db ds_authority_db
 
 Write-Host "Waiting 10 seconds for databases to stabilize..."
 Start-Sleep -Seconds 10
@@ -47,7 +47,7 @@ Start-Sleep -Seconds 10
 # ----------------------------
 Write-Host ""
 Write-Host "--- Setup databases ---" -ForegroundColor Yellow
-docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider_setup ds_core_consumer_setup ds_authority_setup
+docker-compose -f "$DOCKER_COMPOSE_PATH" up -d ds_core_provider1_setup ds_core_provider2_setup ds_core_consumer_setup ds_authority_setup
 
 # ----------------------------
 # Bye!
