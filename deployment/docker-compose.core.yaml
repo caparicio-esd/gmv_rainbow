@@ -13,11 +13,11 @@ services:
     ports:
       - "1200:1200"
     volumes:
-      - ./../.env.provider.core:/app/.env.provider.core
+      - ./../.env.provider1.core:/app/.env.provider1.core
       - ./../certificates:/app/certificates
       - ./../specs:/app/specs
     entrypoint: ["/usr/local/bin/rainbow_core"]
-    command: ["provider", "start", "--env-file", "/app/.env.provider.core"]
+    command: ["provider", "start", "--env-file", "/app/.env.provider1.core"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -28,9 +28,9 @@ services:
     depends_on:
       - ds_core_provider_db
     volumes:
-      - ./../.env.provider.core:/app/.env.provider.core
+      - ./../.env.provider1.core:/app/.env.provider1.core
     entrypoint: ["/usr/local/bin/rainbow_core"]
-    command: ["provider", "setup", "--env-file", "/app/.env.provider.core"]
+    command: ["provider", "setup", "--env-file", "/app/.env.provider1.core"]
 
   ds_core_provider_db:
     container_name: "ds_core_provider_db"
