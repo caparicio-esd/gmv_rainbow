@@ -1,15 +1,15 @@
 version: "3.5"
 services:
   # ====================================================================
-  # PROVIDER ===========================================================
-  # Core provider with start and setup services, along with its database
-  ds_core_provider:
-    container_name: ds_core_provider
+  # PROVIDER_1 ===========================================================
+  # Core provider1 with start and setup services, along with its database
+  ds_core_provider1:
+    container_name: ds_core_provider1
     image: quay.io/eunomia_upm/rainbow:0.3.8
     #platform: linux/amd64
     restart: on-failure
     depends_on:
-      - ds_core_provider_db
+      - ds_core_provider1_db
     ports:
       - "1200:1200"
     volumes:
@@ -17,31 +17,77 @@ services:
       - ./../certificates:/app/certificates
       - ./../specs:/app/specs
     entrypoint: ["/usr/local/bin/rainbow_core"]
-    command: ["provider", "start", "--env-file", "/app/.env.provider1.core"]
+    command: ["provider1", "start", "--env-file", "/app/.env.provider1.core"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  ds_core_provider_setup:
-    container_name: ds_core_provider_setup
+  ds_core_provider1_setup:
+    container_name: ds_core_provider1_setup
     image: quay.io/eunomia_upm/rainbow:0.3.8
     #platform: linux/amd64
     depends_on:
-      - ds_core_provider_db
+      - ds_core_provider1_db
     volumes:
       - ./../.env.provider1.core:/app/.env.provider1.core
     entrypoint: ["/usr/local/bin/rainbow_core"]
-    command: ["provider", "setup", "--env-file", "/app/.env.provider1.core"]
+    command: ["provider1", "setup", "--env-file", "/app/.env.provider1.core"]
 
-  ds_core_provider_db:
-    container_name: "ds_core_provider_db"
+  ds_core_provider1_db:
+    container_name: "ds_core_provider1_db"
     image: "postgres"
     restart: always
     environment:
-      POSTGRES_PASSWORD: ds_provider
-      POSTGRES_USER: ds_provider
-      POSTGRES_DB: ds_provider
+      POSTGRES_PASSWORD: ds_provider1
+      POSTGRES_USER: ds_provider1
+      POSTGRES_DB: ds_provider1
     ports:
       - "1400:5432"
+
+
+# ====================================================================
+  # PROVIDER_2 ===========================================================
+  # Core provider2 with start and setup services, along with its database
+  ds_core_provider2:
+    container_name: ds_core_provider2
+    image: quay.io/eunomia_upm/rainbow:0.3.8
+    #platform: linux/amd64
+    restart: on-failure
+    depends_on:
+      - ds_core_provider2_db
+    ports:
+      - "1800:1800"
+    volumes:
+      - ./../.env.provider2.core:/app/.env.provider2.core
+      - ./../certificates:/app/certificates
+      - ./../specs:/app/specs
+    entrypoint: ["/usr/local/bin/rainbow_core"]
+    command: ["provider2", "start", "--env-file", "/app/.env.provider2.core"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  ds_core_provider2_setup:
+    container_name: ds_core_provider2_setup
+    image: quay.io/eunomia_upm/rainbow:0.3.8
+    #platform: linux/amd64
+    depends_on:
+      - ds_core_provider2_db
+    volumes:
+      - ./../.env.provider2.core:/app/.env.provider2.core
+    entrypoint: ["/usr/local/bin/rainbow_core"]
+    command: ["provider2", "setup", "--env-file", "/app/.env.provider2.core"]
+  ds_core_provider2_db:
+    container_name: "ds_core_provider2_db"
+    image: "postgres"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ds_provider2
+      POSTGRES_USER: ds_provider2
+      POSTGRES_DB: ds_provider2
+    ports:
+      - "1800:5432"
+
+
+
 
   # ====================================================================
   # CONSUMER ===========================================================
