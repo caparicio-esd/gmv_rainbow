@@ -20,7 +20,7 @@ Write-Host "Stopping databases with Docker Compose..."
 
 $DOCKER_COMPOSE_PATH = Join-Path $BASE_DIR "deployment\docker-compose.core.yaml"
 
-docker-compose -f $DOCKER_COMPOSE_PATH down ds_core_provider ds_core_consumer ds_authority
+docker-compose -f $DOCKER_COMPOSE_PATH down -v
 
 Write-Host "Waiting 3 seconds for applications to be killed..."
 Start-Sleep -Seconds 3
