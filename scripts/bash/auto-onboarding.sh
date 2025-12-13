@@ -18,14 +18,17 @@
 # --- 1. Definición de URLs (Entorno Local) ---
 AuthorityUrl="http://127.0.0.1:1500"
 ConsumerUrl="http://127.0.0.1:1100"
-ProviderUrl="http://127.0.0.1:1200"
+Provider1Url="http://127.0.0.1:1200"
+Provider2Url="http://127.0.0.1:1800"
 
 # --- Definición de URLs (Entorno Docker Interno) ---
 # Estas URLs se envían dentro de los payloads JSON para que los contenedores
 # se comuniquen entre sí.
 AuthorityUrlFromDocker="http://host.docker.internal:1500"
 ConsumerUrlFromDocker="http://host.docker.internal:1100"
-ProviderUrlFromDocker="http://host.docker.internal:1200"
+Provider1UrlFromDocker="http://host.docker.internal:1200"
+Provider2UrlFromDocker="http://host.docker.internal:1800"
+
 
 # Fail-fast: Detener la ejecución inmediatamente si ocurre un error.
 set -e
@@ -90,13 +93,13 @@ function invoke_curl_robust {
 echo "Starting auto-onboarding script (Bash Port)..." >&2
 
 # ----------------------------
-# 2.1 - 2.3 Onboarding Authority / Consumer / Provider
+# 2.1 - 2.3 Onboarding Authority / Consumer / Provider1 / Provider2
 # ----------------------------
 # PowerShell: Invoke-CurlJson ... -ParseJson:$false
 invoke_curl_robust "POST" "$AuthorityUrl/api/v1/wallet/onboard" "" "1. Onboarding Authority (A)"
 invoke_curl_robust "POST" "$ConsumerUrl/api/v1/wallet/onboard" "" "2. Onboarding Consumer (C)"
-invoke_curl_robust "POST" "$ProviderUrl/api/v1/wallet/onboard" "" "3. Onboarding Provider (P)"
-
+invoke_curl_robust "POST" "$Provider1Url/api/v1/wallet/onboard" "" "3. Onboarding Provider1 (P1)"
+invoke_curl_robust "POST" "$Provider2Url/api/v1/wallet/onboard" "" "4. Onboarding Provider2 (P2)"
 
 # ----------------------------
 # 2.4 Obtención de DIDs
@@ -107,11 +110,13 @@ echo "--- 4. Getting DIDs of participants ---" >&2
 # Extraemos la propiedad .id del JSON de respuesta
 AuthorityDid=$(invoke_curl_robust "GET" "$AuthorityUrl/api/v1/wallet/did.json" "" "4.1 Get A Did" | jq -r '.id')
 ConsumerDid=$(invoke_curl_robust "GET" "$ConsumerUrl/api/v1/wallet/did.json" "" "4.2 Get C Did" | jq -r '.id')
-ProviderDid=$(invoke_curl_robust "GET" "$ProviderUrl/api/v1/wallet/did.json" "" "4.3 Get P Did" | jq -r '.id')
+Provider1Did=$(invoke_curl_robust "GET" "$Provider1Url/api/v1/wallet/did.json" "" "4.3 Get P1 Did" | jq -r '.id')
+Provider2Did=$(invoke_curl_robust "GET" "$Provider2Url/api/v1/wallet/did.json" "" "4.4 Get P2 Did" | jq -r '.id')
 
 echo "Authority DID: $AuthorityDid" >&2
 echo "Consumer DID:  $ConsumerDid" >&2
-echo "Provider DID:  $ProviderDid" >&2
+echo "Provider1 DID:  $Provider1Did" >&2
+echo "Provider2 DID:  $Provider2Did" >&2
 echo "-----------------------------------------------" >&2
 
 
@@ -183,30 +188,53 @@ invoke_curl_robust "POST" "$ConsumerUrl/api/v1/wallet/oidc4vci" "$OIDC4VCI_PROCE
 
 
 # ----------------------------
-# 2.10 Consumer solicita acceso al Provider (OIDC4VP Grant)
+# 2.10 Consumer solicita acceso al Provider1 (OIDC4VP Grant)
 # ----------------------------
 # NOTA CRÍTICA: En PowerShell el slug es "rainbow_provider", no "provider".
 # Mapeo de variables PowerShell -> jq:
 # $OIDC4VP_BODY = @{ url=...FromDocker, id=$PROVIDER_DID, slug="rainbow_provider", actions="talk" }
 
-OIDC4VP_BODY=$(jq -n \
-    --arg url "$ProviderUrlFromDocker/api/v1/gate/access" \
-    --arg id "$ProviderDid" \
+OIDC4VP_BODY_P1=$(jq -n \
+    --arg url "$Provider1UrlFromDocker/api/v1/gate/access" \
+    --arg id "$Provider1Did" \
     --arg slug "rainbow_provider" \
     --arg actions "talk" \
     '{"url": $url, "id": $id, "slug": $slug, "actions": $actions}')
 
 # La respuesta es el URI en texto plano
-OIDC4VP_URI_RAW=$(invoke_curl_robust "POST" "$ConsumerUrl/api/v1/onboard/provider" "$OIDC4VP_BODY" "10. Consumer requests grant from Provider (Get OIDC4VP URI)")
+OIDC4VP_URI_RAW_P1=$(invoke_curl_robust "POST" "$ConsumerUrl/api/v1/onboard/provider" "$OIDC4VP_BODY_P1" "10. Consumer requests grant from Provider (Get OIDC4VP URI)")
 
 # Limpieza de espacios en blanco
-OIDC4VP_URI=$(echo "$OIDC4VP_URI_RAW" | tr -d '[:space:]')
+OIDC4VP_URI_P1=$(echo "$OIDC4VP_URI_RAW_P1" | tr -d '[:space:]')
 
-if [[ -z "$OIDC4VP_URI" ]]; then
+if [[ -z "$OIDC4VP_URI_P1" ]]; then
     echo "ERROR: Could not get OIDC4VP_URI. Exiting." >&2
     exit 1
 fi
-echo "OIDC4VP_URI: $OIDC4VP_URI" >&2
+echo "OIDC4VP_URI: $OIDC4VP_URI_P1" >&2
+
+# ----------------------------
+# 2.10 Consumer solicita acceso al Provider2 (OIDC4VP Grant)
+# ----------------------------
+OIDC4VP_BODY_P2=$(jq -n \
+    --arg url "$Provider2UrlFromDocker/api/v1/gate/access" \
+    --arg id "$Provider2Did" \
+    --arg slug "rainbow_provider" \
+    --arg actions "talk" \
+    '{"url": $url, "id": $id, "slug": $slug, "actions": $actions}')
+
+# La respuesta es el URI en texto plano
+OIDC4VP_URI_RAW_P2=$(invoke_curl_robust "POST" "$ConsumerUrl/api/v1/onboard/provider" "$OIDC4VP_BODY_P2" "10. Consumer requests grant from Provider (Get OIDC4VP URI)")
+
+# Limpieza de espacios en blanco
+OIDC4VP_URI_P2=$(echo "$OIDC4VP_URI_RAW_P2" | tr -d '[:space:]')
+
+if [[ -z "$OIDC4VP_URI_P2" ]]; then
+    echo "ERROR: Could not get OIDC4VP_URI. Exiting." >&2
+    exit 1
+fi
+echo "OIDC4VP_URI: $OIDC4VP_URI_P2" >&2
+
 
 
 # ----------------------------
